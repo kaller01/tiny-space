@@ -1,0 +1,3 @@
+WIDTH, HEIGHT = 1600, 800
+FPS = 60
+dt = 1/ FPS
