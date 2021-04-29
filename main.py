@@ -3,9 +3,11 @@ import pygame
 from player import Player
 from camera import Camera, Follow, Static
 from engine import Engine
+from Planet import Planet
 from config import *
 from pygame.locals import *
 clock = pygame.time.Clock()
+vector = pygame.math.Vector2
 
 rocket = Player()
 camera = Camera(rocket)
@@ -20,8 +22,8 @@ screen = pygame.display.set_mode([WIDTH, HEIGHT])
 game = pygame.Surface([WIDTH,HEIGHT])
 SpaceEngine = Engine(game,camera)
 particles = ParticleManager(SpaceEngine)
-particles.addParticle(rocket)
-
+particles.addPlayer(rocket)
+particles.generatePlanets()
 
 running = True
 while running:
@@ -47,12 +49,11 @@ while running:
     rocket.set_keys(pressed_keys)
     
     particles.update(dt)
+
+    particles.checkCollision() 
+
     camera.scroll()
     particles.draw()
-    
-
-    # Temporary, Shouldn't be done this way
-    pygame.draw.ellipse(game, (255, 255, 255), (300-camera.offset.x,300-camera.offset.y,500,500), width=5)
 
     pygame.display.flip()
 

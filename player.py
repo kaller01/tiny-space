@@ -16,10 +16,14 @@ class Player(Particle):
         self.thrusterForce = 60
         self.thruster = False
 
+    def __repr__(self):
+        return "Player"
+
     def draw(self):
         surface = self.surface
         width = 20
         height = 60
+        pygame.draw.ellipse(surface, (255), (0,0,2,2))
         pygame.draw.ellipse(surface, (255, 255, 255), (surface.get_width()/2-width/2, surface.get_height()/2-height/2, width, height))
         pygame.draw.ellipse(surface, (255, 0, 0), (surface.get_width()/2-width/2, surface.get_height()/2+height-width/4-height/2, width, width/2))
         pygame.draw.rect(surface, (255, 255, 255), (surface.get_width()/2-width/2, surface.get_height()/2+height-width-height/2, width, width))
@@ -53,5 +57,5 @@ class Player(Particle):
 
         super().update(dt)
         self.draw()
-        print(self.rect)
+        # print(self.positon)
         

@@ -17,7 +17,6 @@ class Camera:
     def scroll(self):
         self.method.scroll()
 
-
 class CameraScroll(ABC):
     def __init__(self, camera, player):
         self.camera = camera
