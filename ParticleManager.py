@@ -12,6 +12,7 @@ class ParticleManager():
         self.particles = []
         self.player = None
         self.G = 0.1
+        self.collisionWithPlayer = False
 
     def addParticle(self,particle):
         self.particles.append(particle)
@@ -25,17 +26,19 @@ class ParticleManager():
             # print(planet)
         if not planet.__repr__() == "Player": 
             if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
-                # while True:
-                print("crash")
-
+                self.player.velocity = vector(0,0)
+                return True
+        return False
     def update(self,dt):
+        self.collisionWithPlayer = False
         for particle in self.particles:
             # print("Inframe", self.engine.camera.inframe(particle.positon))
             if not self.engine.camera.inframe(particle.positon):
                 continue
             self.gravity(particle)
             particle.update(dt)
-            self.checkCollision(particle)
+            if self.checkCollision(particle):
+                self.collisionWithPlayer = True
             self.engine.draw(particle.get_surface(),particle.get_rect())
             self.engine.debug(particle.positon)
 

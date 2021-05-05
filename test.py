@@ -7,6 +7,8 @@ from Planet import Planet
 from effect import Effect
 from config import *
 from pygame.locals import *
+import config
+
 clock = pygame.time.Clock()
 vector = pygame.math.Vector2
 
@@ -58,8 +60,14 @@ while running:
 
     rocket.set_keys(pressed_keys)
 
-    
-    particles.update(dt) 
+    #particles.update(dt) 
+
+    if particles.collisionWithPlayer:
+        font = pygame.font.Font(None,144)
+        text = "GAME OVER"
+        text_surface = font.render(text, True, (255,255,55))
+        screen.blit(text_surface,((config.WIDTH/2),config.HEIGHT/2))
+        # spelet ska resetta efter detta
 
     camera.scroll()
 
