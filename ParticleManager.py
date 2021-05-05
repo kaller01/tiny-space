@@ -21,11 +21,9 @@ class ParticleManager():
         self.addParticle(particle)
         #lägga in rocket i particles? tills senare
 
-    def checkCollision(self):
-        for planet in self.particles:
+    def checkCollision(self, planet):
             # print(planet)
-            if planet.__repr__() == "Player":
-                continue
+        if not planet.__repr__() == "Player": 
             if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
                 # while True:
                 print("crash")
@@ -37,14 +35,15 @@ class ParticleManager():
                 continue
             self.gravity(particle)
             particle.update(dt)
+            self.checkCollision(particle)
             self.engine.draw(particle.get_surface(),particle.get_rect())
             self.engine.debug(particle.positon)
 
     def gravity(self,p1):
-        if p1.__repr__() == "Player":
+        if p1.__repr__() != "Planet":
             for p2 in self.particles:
                 distance_squared = self.getDistance(p1.positon,p2.positon)
-                if(p1 == p2):
+                if(p1 == p2 or p2.__repr__() == "Effect"):
                     continue
                 angle = self.getAngle(p1.positon,p2.positon)
                 

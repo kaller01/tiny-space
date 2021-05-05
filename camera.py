@@ -18,7 +18,7 @@ class Camera:
         self.method.scroll()
 
     def inframe(self,position):
-        return self.method.inframe(position,self.DISPLAY_W)
+        return self.method.inframe(position,self.DISPLAY_W,self.DISPLAY_H)
 
 class CameraScroll(ABC):
     def __init__(self, camera, player):
@@ -39,14 +39,17 @@ class Follow(CameraScroll):
         self.camera.offset_float.y += (self.player.rect.y - self.camera.offset_float.y + self.camera.CONST.y)
         self.camera.offset.x, self.camera.offset.y = int(self.camera.offset_float.x), int(self.camera.offset_float.y)
 
-    def inframe(self,postion,radie):
-        return self.player.positon.distance_squared_to(postion) <= radie**2
+    def inframe(self,postion,width,height):
+        return self.player.positon.distance_squared_to(postion) <= width**2
 
 class Static(CameraScroll):
     def __init__(self, camera, player):
         CameraScroll.__init__(self, camera, player)
 
     def scroll(self):
+        pass
+
+    def inframe(self,postion,width,height):
         pass
 
 class Border(CameraScroll):
