@@ -11,10 +11,10 @@ class ParticleManager():
         self.engine = engine
         self.particles = []
         self.player = None
+        self.G = 0.1
 
     def addParticle(self,particle):
         self.particles.append(particle)
-
 
     def addPlayer(self,particle):
         self.player = particle
@@ -26,58 +26,82 @@ class ParticleManager():
             # print(planet)
             if planet.__repr__() == "Player":
                 continue
-            if self.getDistance(self.player,planet) <= planet.radius:
+            if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
                 # while True:
                 print("crash")
 
     def update(self,dt):
         for particle in self.particles:
+            # print("Inframe", self.engine.camera.inframe(particle.positon))
+            if not self.engine.camera.inframe(particle.positon):
+                continue
+            self.gravity(particle)
             particle.update(dt)
-
-    def draw(self):
-        for particle in self.particles:
             self.engine.draw(particle.get_surface(),particle.get_rect())
+            self.engine.debug(particle.positon)
 
-
-    def gravity(self):
-        for p1 in self.particles:
+    def gravity(self,p1):
+        if p1.__repr__() == "Player":
             for p2 in self.particles:
-                distance = self.getDistance(p1,p2)
-                #                   #   mass2 = p2.mass             #   mass1 = p1.mass
-                force = self.getForce(distance,p1,p2)
-                p1.addForce(force)                                 
-                p2.addForce(force)
+                distance_squared = self.getDistance(p1.positon,p2.positon)
+                if(p1 == p2):
+                    continue
+                angle = self.getAngle(p1.positon,p2.positon)
+                
+                # angle += 180 # return
+                # print("Vinkel",angle)
+                # print("Dist",distance_squared)
+                # angle += 90
+                # print("Vinkel",angle)
+                force = self.getForce(distance_squared,angle,p1,p2)
+                # print("Force",force)
+                p1.addForce(-force)                                 
 
     def getDistance(self,p1,p2):
-        x1 = p1.positon.x
-        x2 = p2.positon.x
-
-        y1 = p1.positon.y
-        y2 = p2.positon.y
-
-        distance = math.sqrt(((x2-x1)**2)+((y2-y1)**2))
-        #pos3 = vector(x2-x1,y2-y1)
+        distance = p1.distance_squared_to(p2)
+        # angle = p1.angle_to(p2)
+        # print(angle)
+        # The angle between 
         return distance
 
-    def getForce(self,distance,p1,p2):
-        mass1 = p1.mass
-        return 0
-        pass
+    def getAngle(self,p1,p2):
+        x = p1.x - p2.x
+        y = p1.y - p2.y
+        angle = math.atan2(x,y)
+        angle = math.degrees(angle)
+        angle -= 90 # 0
+        angle = -angle
+        return angle
 
+
+
+
+    def getForce(self,distance,angle,p1,p2):
+        mass1 = p1.mass
+        mass2 = p2.mass
+        G = self.G
+
+        rawForce = G*mass1*mass2 / (distance)
+        force = vector(rawForce,0)
+        force.rotate_ip((angle))
+        # force.y = -force.y
+        return force
 
     def generatePlanets(self):
-        xAmount = 40
-        yAmount = 40
-        maxRadius = 500
+        xAmount = 20
+        yAmount = 20
+        maxRadius = 400
+        maxMass = 10**8
         factor = 1
-        grid = 1000
+        grid = 1200
         for x in range(-xAmount,xAmount):
             for y in range(-yAmount,yAmount):
-                print(x,y)
+                # print(x,y)
                 value = (opensimplex.noise2d(x,y)+1)/2
                 value **= factor
                 if value >= 0.5:
                     radius = value * maxRadius
+                    mass = value * maxMass
                     positon = vector(x*grid+maxRadius,y*grid+maxRadius)
-                    planet = Planet(positon,radius)
+                    planet = Planet(positon,radius,mass)
                     self.addParticle(planet)

@@ -9,5 +9,9 @@ class Engine():
 
     def draw(self, object, rect):
         # Compensate for camera
-        self.surface.blit(object,(rect.x - self.camera.offset.x, rect.y - self.camera.offset.y))
+        self.surface.blit(object,(rect.x - self.camera.offset.x, -(rect.y - self.camera.offset.y)))
+
+    def debug(self, vector):
+        # Compensate for camera
+        pygame.draw.circle(self.surface, (255,0,0), (vector.x - self.camera.offset.x, - (vector.y - self.camera.offset.y)),2)
 

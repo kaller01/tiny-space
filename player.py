@@ -10,11 +10,14 @@ vector = pygame.math.Vector2
 class Player(Particle):
     def __init__ (self):
         super().__init__()
-        self.surface = pygame.Surface([20,70], pygame.SRCALPHA)
+        self.surface = pygame.Surface([30,30], pygame.SRCALPHA)
         self.rect = self.surface.get_rect()
+        self.mass = 1
         self.angle = 0
         self.thrusterForce = 60
         self.thruster = False
+        self.width = 30
+        self.height = 30
 
     def __repr__(self):
         return "Player"
@@ -23,14 +26,17 @@ class Player(Particle):
         surface = self.surface
         width = 20
         height = 60
-        pygame.draw.ellipse(surface, (255), (0,0,2,2))
-        pygame.draw.ellipse(surface, (255, 255, 255), (surface.get_width()/2-width/2, surface.get_height()/2-height/2, width, height))
-        pygame.draw.ellipse(surface, (255, 0, 0), (surface.get_width()/2-width/2, surface.get_height()/2+height-width/4-height/2, width, width/2))
-        pygame.draw.rect(surface, (255, 255, 255), (surface.get_width()/2-width/2, surface.get_height()/2+height-width-height/2, width, width))
-        pygame.draw.ellipse(surface, (0, 0, 255), (surface.get_width()/2-width/6, surface.get_height()/2-width/6, width/3, width/3))
+        pygame.draw.circle(self.surface, (255, 0, 0), (self.width/2,self.height/2),self.width/2)
+        pygame.draw.circle(self.surface, (0,255,0),(self.width,self.height/2),10)
+        # pygame.draw.ellipse(surface, (255), (0,0,2,2))
+        # pygame.draw.ellipse(surface, (255, 255, 255), (surface.get_width()/2-width/2, surface.get_height()/2-height/2, width, height))
+        # pygame.draw.ellipse(surface, (255, 0, 0), (surface.get_width()/2-width/2, surface.get_height()/2+height-width/4-height/2, width, width/2))
+        # pygame.draw.rect(surface, (255, 255, 255), (surface.get_width()/2-width/2, surface.get_height()/2+height-width-height/2, width, width))
+        # pygame.draw.ellipse(surface, (0, 0, 255), (surface.get_width()/2-width/6, surface.get_height()/2-width/6, width/3, width/3))
 
     def get_surface(self):
-        return pygame.transform.rotozoom(self.surface, self.angle-90,1)
+        return pygame.transform.rotozoom(self.surface, self.angle,1)
+        # return self.surface
 
     def get_rect(self):
         return self.rect
@@ -52,10 +58,13 @@ class Player(Particle):
         if self.thruster:
             force = vector(self.thrusterForce,0)
             force.rotate_ip(self.angle)
-            force.y = -force.y
             self.addForce(force)
 
+        # print("Rocket",self.force)
         super().update(dt)
         self.draw()
+        # print("Rocket angle",self.angle)
         # print(self.positon)
+       
+
         

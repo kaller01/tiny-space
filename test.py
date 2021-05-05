@@ -9,6 +9,8 @@ from pygame.locals import *
 clock = pygame.time.Clock()
 vector = pygame.math.Vector2
 
+PLAYER = True
+
 rocket = Player()
 camera = Camera(rocket)
 follow = Follow(camera,rocket)
@@ -18,28 +20,33 @@ camera.setmethod(follow)
 
 pygame.init()
 
-screen = pygame.display.set_mode([WIDTH, HEIGHT+100])
+screen = pygame.display.set_mode([WIDTH, HEIGHT])
 game = pygame.Surface([WIDTH,HEIGHT])
 SpaceEngine = Engine(game,camera)
 particles = ParticleManager(SpaceEngine)
-particles.addPlayer(rocket)
-particles.generatePlanets()
+if PLAYER:
+    particles.addPlayer(rocket)
+
+p1 = Planet(vector(-200,300),100,10**7)
+p2 = Planet(vector(300,100),100,10**7)
+
+particles.addParticle(p1)
+particles.addParticle(p2)
 
 running = True
 while running:
     pressed_keys = pygame.key.get_pressed()
-
     # Did the user click the window close button?
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
 
+    
     if(pressed_keys[K_F1]):
         camera.setmethod(static)
     if(pressed_keys[K_F2]):
         camera.setmethod(follow)
-
 
     # Fill the background with white
     screen.fill((255))
@@ -47,13 +54,13 @@ while running:
     game.fill((0, 0, 0))
 
     rocket.set_keys(pressed_keys)
+
     
     particles.update(dt)
 
-    # particles.checkCollision() 
+    particles.checkCollision() 
 
     camera.scroll()
-    # particles.draw()
 
     pygame.display.flip()
 

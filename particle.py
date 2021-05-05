@@ -9,7 +9,9 @@ class Particle:
         self.velocity = vector(0,0)
         self.acceleration = vector(0,0)
         self.force = vector(0,0)
-        self.mass = 1
+        self.mass = 10000
+        self.width = 1
+        self.height = 1
         #Display
 
     def update(self,dt):
@@ -17,11 +19,10 @@ class Particle:
         self.velocity += self.acceleration * dt
         self.positon += self.velocity * dt
         self.force = vector(0,0)
-        self.rect.x, self.rect.y= int(self.positon.x), int(self.positon.y)
+        self.rect.x, self.rect.y= int(self.positon.x-self.width), int(self.positon.y-self.height)
 
     def addForce(self,force):
         self.force += force
-        
 
     def get_surface():
         pass
