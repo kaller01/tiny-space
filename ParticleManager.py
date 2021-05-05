@@ -27,9 +27,9 @@ class ParticleManager():
             if planet.__repr__() == "Player":
                 continue
             if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
-                # while True:
-                print("crash")
-
+                self.player.velocity = vector(0,0)
+                return True
+        return False
     def update(self,dt):
         for particle in self.particles:
             # print("Inframe", self.engine.camera.inframe(particle.positon))
