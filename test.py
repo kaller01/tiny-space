@@ -60,7 +60,7 @@ while running:
 
     rocket.set_keys(pressed_keys)
 
-    #particles.update(dt) 
+    particles.update(dt) 
 
     if particles.collisionWithPlayer:
         font = pygame.font.Font(None,144)
