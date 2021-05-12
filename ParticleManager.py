@@ -11,7 +11,7 @@ class ParticleManager():
         self.engine = engine
         self.particles = []
         self.player = None
-        self.G = 0.1
+        self.G = 0.6
         self.collisionWithPlayer = False
 
     def addParticle(self,particle):
@@ -24,12 +24,17 @@ class ParticleManager():
 
     def checkCollision(self, planet):
             # print(planet)
-        if not planet.__repr__() == "Player": 
+        if not planet.__repr__() == "Player" and not planet.__repr__() == "Effect": 
             if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
                 #self.player.velocity = vector(0,0) Not a good way to do this. 
+                self.player.velocity.rotate_ip(180)
                 return True
         return False
     def update(self,dt):
+        effects = self.player.getEffects()
+        for effect in effects:
+            self.addParticle(effect)
+
         self.collisionWithPlayer = False
         for particle in self.particles:
             # print("Inframe", self.engine.camera.inframe(particle.positon))
@@ -41,12 +46,14 @@ class ParticleManager():
                 self.collisionWithPlayer = True
             self.engine.draw(particle.get_surface(),particle.get_rect())
             self.engine.debug(particle.positon)
+            if particle.timeout():
+                self.particles.remove(particle)
 
     def gravity(self,p1):
         if p1.__repr__() != "Planet":
             for p2 in self.particles:
                 distance_squared = self.getDistance(p1.positon,p2.positon)
-                if(p1 == p2 or p2.__repr__() == "Effect"):
+                if(p1 == p2 or p2.__repr__() == "Effect" or p1.__repr__() == "Effect"):
                     continue
                 angle = self.getAngle(p1.positon,p2.positon)
                 
@@ -75,15 +82,13 @@ class ParticleManager():
         angle = -angle
         return angle
 
-
-
-
     def getForce(self,distance,angle,p1,p2):
         mass1 = p1.mass
         mass2 = p2.mass
         G = self.G
-
-        rawForce = G*mass1*mass2 / (distance)
+        rawForce = 0
+        if(distance > 0):
+            rawForce = G*mass1*mass2 / (distance)
         force = vector(rawForce,0)
         force.rotate_ip((angle))
         # force.y = -force.y
@@ -95,7 +100,7 @@ class ParticleManager():
         maxRadius = 400
         maxMass = 10**8
         factor = 1
-        grid = 1200
+        grid = 1000
         for x in range(-xAmount,xAmount):
             for y in range(-yAmount,yAmount):
                 # print(x,y)

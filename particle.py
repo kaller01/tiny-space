@@ -32,3 +32,6 @@ class Particle:
 
     def draw():
         pass
+
+    def timeout():
+        return False
