@@ -26,7 +26,7 @@ class ParticleManager():
             # print(planet)
         if not planet.__repr__() == "Player": 
             if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
-                self.player.velocity = vector(0,0)
+                #self.player.velocity = vector(0,0) Not a good way to do this. 
                 return True
         return False
     def update(self,dt):

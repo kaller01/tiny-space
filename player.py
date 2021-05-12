@@ -36,7 +36,7 @@ class Player(Particle):
         pygame.draw.ellipse(surface, (0, 0, 255,alpha), (surface.get_width()/2-width/6, surface.get_height()/2-width/6, width/3, width/3))
 
     def get_surface(self):
-        return pygame.transform.rotozoom(self.surface, self.angle,1)
+        return pygame.transform.rotozoom(self.surface, self.angle-90,1)
         # return self.surface
 
     def get_rect(self):

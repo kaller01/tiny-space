@@ -50,6 +50,7 @@ class Static(CameraScroll):
         pass
 
     def inframe(self,postion,width,height):
+    
         pass
 
 class Border(CameraScroll):

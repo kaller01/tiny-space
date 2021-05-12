@@ -6,6 +6,7 @@ from engine import Engine
 from Planet import Planet
 from config import *
 from pygame.locals import *
+from score import renderScore
 clock = pygame.time.Clock()
 vector = pygame.math.Vector2
 
@@ -18,8 +19,9 @@ camera.setmethod(follow)
 
 pygame.init()
 
-screen = pygame.display.set_mode([WIDTH, HEIGHT+200])
+screen = pygame.display.set_mode([WIDTH, HEIGHT+100])
 game = pygame.Surface([WIDTH,HEIGHT])
+ux = pygame.Surface([WIDTH,100])
 SpaceEngine = Engine(game,camera)
 particles = ParticleManager(SpaceEngine)
 particles.addPlayer(rocket)
@@ -46,42 +48,29 @@ while running:
 
 
     # Fill the background with white
-    screen.fill((255))
+    ux.fill((255))
     screen.blit(game,(0,0))
     game.fill((0, 0, 0))
 
-    # DRAW SCORE
-    white = (255, 255, 255)
-    green = (0, 255, 0)
-    blue = (0, 0, 128)
-    # create a font object.
-    # 1st parameter is the font file
-    # which is present in pygame.
-    # 2nd parameter is size of the font
-    font = pygame.font.Font('freesansbold.ttf', 32)
-    # create a text suface object,
-    # on which text is drawn on it.
-    scoreString = str(score)
-    text = font.render('SCORE: ' + scoreString, True, green, blue)
-    # create a rectangular object for the
-    # text surface object
-    textRect = text.get_rect()
-    textRect.bottomleft = (WIDTH//4 - 100, HEIGHT//4 + 650)
-    screen.blit(text, textRect)
-    #
-
+    renderScore(ux,score)
+    
     rocket.set_keys(pressed_keys)
     
     particles.update(dt)
 
+    # Calculate score
     if rocket.velocity.length() >= 10:
         score += 0.001*rocket.velocity.length()
-    print(rocket.velocity.length(), "length")
-    print(score, "score")
-    # particles.checkCollision() 
+
+    if particles.collisionWithPlayer:
+        font = pygame.font.Font(None,144)
+        text = "GAME OVER"
+        text_surface = font.render(text, True, (255,255,55))
+        screen.blit(text_surface,((WIDTH/2),HEIGHT/2))
+        # spelet ska resetta efter detta
 
     camera.scroll()
-    # particles.draw()
+    screen.blit(ux,(0,HEIGHT))
 
     pygame.display.flip()
 
