@@ -5,6 +5,7 @@ from camera import Camera, Follow, Static
 from engine import Engine
 from Planet import Planet
 from config import *
+import math
 from pygame.locals import *
 from score import renderScore
 clock = pygame.time.Clock()
@@ -60,13 +61,18 @@ while running:
 
     # Calculate score
     if rocket.velocity.length() >= 10:
-        score += 0.001*rocket.velocity.length()
+        score += 0.0001*rocket.velocity.length()
 
     if particles.collisionWithPlayer:
         font = pygame.font.Font(None,144)
+        s = math.ceil(score)
         text = "GAME OVER"
+        text2 = "YOUR SCORE: " + str(s)
         text_surface = font.render(text, True, (255,255,55))
         screen.blit(text_surface,((WIDTH/2),HEIGHT/2))
+
+        text_surface = font.render(text2, True, (255,255,55))
+        screen.blit(text_surface,((WIDTH/2),HEIGHT*0.7))
         # spelet ska resetta efter detta
 
     camera.scroll()
