@@ -5,6 +5,7 @@ from camera import Camera, Follow, Static
 from engine import Engine
 from Planet import Planet
 from config import *
+import math
 from pygame.locals import *
 from score import renderScore
 clock = pygame.time.Clock()
@@ -26,12 +27,12 @@ SpaceEngine = Engine(game,camera)
 particles = ParticleManager(SpaceEngine)
 particles.addPlayer(rocket)
 particles.generatePlanets()
+particles.generateAsteroids()
 
 score = 0
 
 running = True
 while running:
-
     pressed_keys = pygame.key.get_pressed()
     
 
@@ -56,19 +57,24 @@ while running:
     
     rocket.set_keys(pressed_keys)
     
-    particles.update(dt)
 
     # Calculate score
     if rocket.velocity.length() >= 10:
-        score += 0.001*rocket.velocity.length()
+        score += 0.0001*rocket.velocity.length()
 
     if particles.collisionWithPlayer:
         font = pygame.font.Font(None,144)
+        s = math.ceil(score)
         text = "GAME OVER"
+        text2 = "YOUR SCORE: " + str(s)
         text_surface = font.render(text, True, (255,255,55))
-        screen.blit(text_surface,((WIDTH/2),HEIGHT/2))
-        # spelet ska resetta efter detta
+        screen.blit(text_surface,(((WIDTH/2) - ((text_surface.get_rect().width)/2)),HEIGHT/2))
 
+        text_surface = font.render(text2, True, (255,255,55))
+        screen.blit(text_surface,(((WIDTH/2) - ((text_surface.get_rect().width)/2)),HEIGHT*0.7))
+        # spelet ska resetta efter detta
+    else:
+        particles.update(dt)
     camera.scroll()
     screen.blit(ux,(0,HEIGHT))
 

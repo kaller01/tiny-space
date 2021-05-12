@@ -29,6 +29,7 @@ class Particle:
     
     def get_rect():
         pass
+    
 
-    def draw():
-        pass
+    def draw(self):
+        pygame.draw.circle(self.surface, (255, 255, 255), (self.radius,self.radius),self.radius, width = 4)
