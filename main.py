@@ -73,6 +73,10 @@ while running:
         text_surface = font.render(text2, True, (255,255,55))
         screen.blit(text_surface,(((WIDTH/2) - ((text_surface.get_rect().width)/2)),HEIGHT*0.7))
         # spelet ska resetta efter detta
+
+        text_surface = font.render(text2, True, (255,255,55))
+        screen.blit(text_surface,(((WIDTH/2) - ((text_surface.get_rect().width)/2)),HEIGHT*0.7))
+        # spelet ska resetta efter detta
     else:
         particles.update(dt)
     camera.scroll()
