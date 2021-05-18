@@ -23,6 +23,8 @@ class Player(Particle):
         self.effects = list()
         self.angularAcc = 0
         self.angularVelocity = 0
+        self.mainThrusterForce = 1000
+        self.sideThrusterForce = 100
         
 
     def __repr__(self):
@@ -62,9 +64,9 @@ class Player(Particle):
             self.accelerate(1)
         
         if self.keys[K_LEFT]:
-            self.rotate(-1)
+            self.rotate(-3)
         elif self.keys[K_RIGHT]:
-            self.rotate(1)
+            self.rotate(3)
 
         # print("Rocket",self.force)
         self.acceleration = self.force / self.mass
@@ -95,35 +97,47 @@ class Player(Particle):
 
     def useThruster(self,value):
         dt = 1/60
-        effectMass = 0.02
-        acceleration = 50000*value
-        v = vector(acceleration*dt,0)
+        effectMass = 0.05
+        force = self.mainThrusterForce*value
+        acceleration = force / effectMass
+        v = acceleration*dt
         offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
-        v.rotate_ip(self.angle+180+offset)
-        v += self.velocity # Add rockets velocity
-        pos = vector(self.positon.x,self.positon.y)
-        length = vector(30,0)
-        length.rotate_ip(self.angle+180)
-        pos += length
-        effect = Effect(pos, v, effectMass)
-        self.effects.append(effect)
+        self.createEffect(v,self.angle+180+offset,effectMass)
+        offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
+        self.createEffect(v,self.angle+180+offset,effectMass)
+        offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
+        self.createEffect(v,self.angle+180+offset,effectMass)
+        offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
+        self.createEffect(v,self.angle+180+offset,effectMass)
+        offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
+        self.createEffect(v,self.angle+180+offset,effectMass)
+        offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
+        self.createEffect(v,self.angle+180+offset,effectMass)
+        offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
+        self.createEffect(v,self.angle+180+offset,effectMass)
+   
         return acceleration * effectMass
 
     def useThrusterSide(self,value):
         dt = 1/60
         effectMass = 0.01
-        acceleration = 50000*value
-        v = vector(acceleration*dt,0)
+        force = self.sideThrusterForce*value
+        acceleration = force / effectMass
+        v = acceleration * dt
         offset = ((random.random()*2)-1)*10 # Random offset just to make it look more fun, no physics implementation of it
-        v.rotate_ip(self.angle+180+90+offset)
-        v += self.velocity # Add rockets velocity
+        self.createEffect(v,self.angle+180+90+offset,effectMass)
+        return acceleration * effectMass
+
+    def createEffect(self,v,angle,effectMass):
         pos = vector(self.positon.x,self.positon.y)
+        v = vector(v,0)
+        v.rotate_ip(angle)
+        v += self.velocity # Add rockets velocity
         length = vector(30,0)
         length.rotate_ip(self.angle+180)
         pos += length
         effect = Effect(pos, v, effectMass)
         self.effects.append(effect)
-        return acceleration * effectMass
 
     def reset(self):
         self.positon = vector(0,0)

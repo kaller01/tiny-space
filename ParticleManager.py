@@ -1,15 +1,17 @@
 from opensimplex import OpenSimplex
-opensimplex = OpenSimplex()
+opensimplex = OpenSimplex(1)
 import pygame
 from Planet import Planet
 vector = pygame.math.Vector2
 import math
+import random
 
 
 class ParticleManager():
     def __init__(self,engine) -> None:
         self.engine = engine
         self.particles = []
+        self.effects = []
         self.player = None
         self.G = 0.6
         self.collisionWithPlayer = False
@@ -21,7 +23,6 @@ class ParticleManager():
     def addPlayer(self,particle):
         self.player = particle
         self.addParticle(particle)
-        #lägga in rocket i particles? tills senare
 
     def checkCollision(self, planet):
             # print(planet)
@@ -32,8 +33,14 @@ class ParticleManager():
         return False
     def update(self,dt):
         effects = self.player.getEffects()
-        for effect in effects:
-            self.addParticle(effect)
+        self.effects += effects
+
+        for particle in self.effects:
+            particle.update(dt)
+            self.engine.draw(particle.get_surface(),particle.get_rect())
+            if particle.timeout():
+                self.effects.remove(particle)
+                
 
         self.collisionWithPlayer = False
         for particle in self.particles:
@@ -48,6 +55,8 @@ class ParticleManager():
             #self.engine.debug(particle.positon)
             if particle.timeout():
                 self.particles.remove(particle)
+
+    
 
     def gravity(self,p1):
         if p1.__repr__() != "Planet":
@@ -109,7 +118,7 @@ class ParticleManager():
                 value **= factor
                 if value >= 0.5:
                     radius = value * maxRadius
-                    mass = value**0.5 * maxMass
+                    mass = value * maxMass
                     positon = vector(x*grid+maxRadius,y*grid+maxRadius)
                     planet = Planet(positon,radius,mass)
                     self.addParticle(planet)

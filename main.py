@@ -7,7 +7,7 @@ from Planet import Planet
 from config import *
 from pygame.locals import *
 from score import renderScore
-joystick = False
+joystick = True
 clock = pygame.time.Clock()
 vector = pygame.math.Vector2
 
@@ -65,10 +65,11 @@ while running:
             
     if joystick:
         x,y,z,v = axes
-        v = (-v+1)
-        x * 2
-        rocket.accelerate(v)
-        rocket.rotate(x)
+        v = (-v+1)/2
+        x 
+        if(v > 0.1):
+            rocket.accelerate(v)
+        rocket.rotate(x*5)
 
 
     if(pressed_keys[K_F1]):
