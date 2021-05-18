@@ -6,6 +6,9 @@ vector = pygame.math.Vector2
 import math
 import random
 
+from Asteroid import Asteroid
+import config
+
 
 class ParticleManager():
     def __init__(self,engine) -> None:
@@ -103,6 +106,22 @@ class ParticleManager():
         # force.y = -force.y
         return force
 
+    def generateAsteroids(self):
+        #position = vector(100,100)
+        radius = 10
+        pos1 = vector(random.choice([config.WIDTH, radius]), random.randint(radius+1,config.HEIGHT))
+        pos2 = vector(random.randint(radius+1,config.WIDTH),  random.choice([config.HEIGHT, radius]))
+        position = random.choice([pos1,pos2])
+        print(position)
+        asteroid = Asteroid(position, radius)
+        asteroid.positon = position
+        asteroid.velocity = vector(-50,50)
+        asteroid.width = 40
+        asteroid.height = 40
+        asteroid.mass = 1
+        self.addParticle(asteroid)
+
+        
     def generatePlanets(self):
         xAmount = 50
         yAmount = 50

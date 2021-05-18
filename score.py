@@ -1,4 +1,5 @@
 import pygame
+import math
 
 def renderScore(surface,score):
     # DRAW SCORE
@@ -12,7 +13,7 @@ def renderScore(surface,score):
     font = pygame.font.Font('freesansbold.ttf', 32)
     # create a text suface object,
     # on which text is drawn on it.
-    scoreString = str(int(score))
+    scoreString = str(math.floor(score))
     text = font.render('SCORE: ' + scoreString, True, green, blue)
     # create a rectangular object for the
     # text surface object
