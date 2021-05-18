@@ -19,7 +19,7 @@ class Particle:
         self.velocity += self.acceleration * dt
         self.positon += self.velocity * dt
         self.force = vector(0,0)
-        self.rect.x, self.rect.y= int(self.positon.x-self.height/2), int(self.positon.y+self.width/2)
+        self.rect.x, self.rect.y= int(self.positon.x-self.width), int(self.positon.y+self.height)
 
     def addForce(self,force):
         self.force += force

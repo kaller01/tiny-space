@@ -37,7 +37,8 @@ class Planet(Particle):
         # We do not want to update the position of the planet
 
     def draw(self):
-        pygame.draw.circle(self.surface, (255, 255, 255), (self.radius,self.radius),self.radius, width = 4)
+        pygame.draw.circle(self.surface, (190, 60, 70), (self.radius,self.radius),self.radius)
+        pygame.draw.circle(self.surface, (0,0,0), (self.radius,self.radius),self.radius, width = 4)
 
     def timeout(self):
         return False

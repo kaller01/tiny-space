@@ -18,10 +18,11 @@ class Player(Particle):
         self.rect = self.surface.get_rect()
         self.mass = 1
         self.angle = 0
-        self.thrusterForce = 400
         self.thruster = False
-        self.vMax = 500 ** 2
+        self.vMax = 1000 ** 2
         self.effects = list()
+        self.angularAcc = 0
+        self.angularVelocity = 0
         
 
     def __repr__(self):
@@ -33,7 +34,7 @@ class Player(Particle):
         height = 60
         # pygame.draw.circle(self.surface, (255, 0, 0), (self.width/2,self.height/2),self.width/2)
         # pygame.draw.circle(self.surface, (0,255,0),(self.width,self.height/2),10)
-        alpha = 100
+        alpha = 255
         pygame.draw.ellipse(surface, (255, 255, 255,alpha), (surface.get_width()/2-width/2, surface.get_height()/2-height/2, width, height))
         pygame.draw.ellipse(surface, (255, 0, 0,alpha), (surface.get_width()/2-width/2, surface.get_height()/2+height-width/4-height/2, width, width/2))
         pygame.draw.rect(surface, (255, 255, 255,alpha), (surface.get_width()/2-width/2, surface.get_height()/2+height-width-height/2, width, width))
@@ -54,27 +55,31 @@ class Player(Particle):
         else:
             self.thruster = False
 
-        if self.keys[K_LEFT]:
-            self.angle+=3
-        elif self.keys[K_RIGHT]:
-            self.angle-=3
+        
 
     def update(self, dt):
         if self.thruster:
-            force = vector(self.thrusterForce,0)
-            force.rotate_ip(self.angle)
-            self.createEffect()
-            self.addForce(force)
+            self.accelerate(1)
+        
+        if self.keys[K_LEFT]:
+            self.rotate(-1)
+        elif self.keys[K_RIGHT]:
+            self.rotate(1)
 
         # print("Rocket",self.force)
         self.acceleration = self.force / self.mass
         self.velocity += self.acceleration * dt
-        print(self.velocity.length())
+        self.angularVelocity += self.angularAcc * dt
+        self.angle += self.angularVelocity * dt
         if(self.velocity.length_squared() > self.vMax):
             self.velocity.scale_to_length(self.vMax ** 0.5)
         self.positon += self.velocity * dt
         self.force = vector(0,0)
-        self.rect.x, self.rect.y= int(self.positon.x-self.height/2), int(self.positon.y+self.width/2)
+        self.angularAcc = 0
+        self.rect = (self.get_surface()).get_rect(center=(30/2,60/2))
+        self.rect.y = -self.rect.y
+        self.rect.x += int(self.positon.x-self.height/2)
+        self.rect.y += int(self.positon.y+self.width/2)
         self.draw()
         # print("Rocket angle",self.angle)
         # print(self.positon)
@@ -88,9 +93,49 @@ class Player(Particle):
         self.effects = list()
         return effects
 
-    def createEffect(self):
-        v = vector(200,0)
-        offset = ((random.random()*2)-1)*20
+    def useThruster(self,value):
+        dt = 1/60
+        effectMass = 0.02
+        acceleration = 50000*value
+        v = vector(acceleration*dt,0)
+        offset = ((random.random()*2)-1)*20 # Random offset just to make it look more fun, no physics implementation of it
         v.rotate_ip(self.angle+180+offset)
-        effect = Effect(vector(self.positon.x,self.positon.y), v)
+        v += self.velocity # Add rockets velocity
+        pos = vector(self.positon.x,self.positon.y)
+        length = vector(30,0)
+        length.rotate_ip(self.angle+180)
+        pos += length
+        effect = Effect(pos, v, effectMass)
         self.effects.append(effect)
+        return acceleration * effectMass
+
+    def useThrusterSide(self,value):
+        dt = 1/60
+        effectMass = 0.01
+        acceleration = 50000*value
+        v = vector(acceleration*dt,0)
+        offset = ((random.random()*2)-1)*10 # Random offset just to make it look more fun, no physics implementation of it
+        v.rotate_ip(self.angle+180+90+offset)
+        v += self.velocity # Add rockets velocity
+        pos = vector(self.positon.x,self.positon.y)
+        length = vector(30,0)
+        length.rotate_ip(self.angle+180)
+        pos += length
+        effect = Effect(pos, v, effectMass)
+        self.effects.append(effect)
+        return acceleration * effectMass
+
+    def reset(self):
+        self.positon = vector(0,0)
+        self.velocity = vector(0,0)
+        self.angularVelocity = 0
+        self.angle = 0
+
+    def accelerate(self,value):
+        force = self.useThruster(value)
+        force = vector(force,0)
+        force.rotate_ip(self.angle)
+        self.addForce(force)
+
+    def rotate(self,value):
+        self.angularAcc = -self.useThrusterSide(value)

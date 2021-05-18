@@ -5,9 +5,9 @@ from pygame.locals import *
 vector = pygame.math.Vector2
 
 class Effect(Particle):
-    def __init__(self, positon, velocity) -> None:
+    def __init__(self, positon, velocity,mass) -> None:
         super().__init__()
-        self.mass = 0.000001
+        self.mass = mass
         self.width = 4
         self.height = 4
         self.radius = self.width/2
@@ -17,10 +17,10 @@ class Effect(Particle):
         self.velocity = velocity
         self.rect.x, self.rect.y= int(self.positon.x-self.radius), int(self.positon.y+self.radius)
         self.draw()
-        self.timelimit = 0.2 # How long until the particle disappears
+        self.timelimit = 0.1 # How long until the particle disappears
        
     def draw(self):
-        pygame.draw.circle(self.surface, (255, 100, 100), (self.width/2,self.width/2),self.width/2, width = 4)
+        pygame.draw.circle(self.surface, (200, 200, 255), (self.width/2,self.width/2),self.width/2, width = 4)
 
     def __repr__(self):
         return "Effect"

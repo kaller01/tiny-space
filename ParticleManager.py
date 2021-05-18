@@ -14,6 +14,7 @@ class ParticleManager():
         self.G = 0.6
         self.collisionWithPlayer = False
 
+
     def addParticle(self,particle):
         self.particles.append(particle)
 
@@ -26,8 +27,7 @@ class ParticleManager():
             # print(planet)
         if not planet.__repr__() == "Player" and not planet.__repr__() == "Effect": 
             if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
-                #self.player.velocity = vector(0,0) Not a good way to do this. 
-                self.player.velocity.rotate_ip(180)
+                self.player.velocity = vector(0,0)
                 return True
         return False
     def update(self,dt):
@@ -45,7 +45,7 @@ class ParticleManager():
             if self.checkCollision(particle):
                 self.collisionWithPlayer = True
             self.engine.draw(particle.get_surface(),particle.get_rect())
-            self.engine.debug(particle.positon)
+            #self.engine.debug(particle.positon)
             if particle.timeout():
                 self.particles.remove(particle)
 
@@ -95,20 +95,21 @@ class ParticleManager():
         return force
 
     def generatePlanets(self):
-        xAmount = 20
-        yAmount = 20
-        maxRadius = 400
+        xAmount = 50
+        yAmount = 50
+        maxRadius = 300
         maxMass = 10**8
         factor = 1
         grid = 1000
-        for x in range(-xAmount,xAmount):
-            for y in range(-yAmount,yAmount):
+        for x in range(int(-xAmount/2),int(xAmount/2)):
+            print( str(int(100*((x+xAmount/2)/xAmount))) + "%")
+            for y in range(int(-yAmount/2),int(yAmount/2)):
                 # print(x,y)
                 value = (opensimplex.noise2d(x,y)+1)/2
                 value **= factor
                 if value >= 0.5:
                     radius = value * maxRadius
-                    mass = value * maxMass
+                    mass = value**0.5 * maxMass
                     positon = vector(x*grid+maxRadius,y*grid+maxRadius)
                     planet = Planet(positon,radius,mass)
                     self.addParticle(planet)

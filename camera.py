@@ -58,7 +58,8 @@ class Static(CameraScroll):
         self.camera.offset.x, self.camera.offset.y = int(self.camera.offset_float.x), int(self.camera.offset_float.y)
 
     def inframe(self,postion,width,height):
-        return (postion.x > self.camera.offset_float.x and postion.x < self.camera.offset_float.x+width and postion.y > self.camera.offset_float.y-height and postion.y < self.camera.offset_float.y)
+        margin = 300
+        return (postion.x > self.camera.offset_float.x-margin and postion.x < self.camera.offset_float.x+width+margin and postion.y > self.camera.offset_float.y-height-margin and postion.y < self.camera.offset_float.y+margin)
             
         
 class Border(CameraScroll):
