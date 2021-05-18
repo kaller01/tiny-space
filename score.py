@@ -12,7 +12,7 @@ def renderScore(surface,score):
     font = pygame.font.Font('freesansbold.ttf', 32)
     # create a text suface object,
     # on which text is drawn on it.
-    scoreString = str(score)
+    scoreString = str(int(score))
     text = font.render('SCORE: ' + scoreString, True, green, blue)
     # create a rectangular object for the
     # text surface object

@@ -33,7 +33,7 @@ if(joystick):
     print (_joystick.get_numhats())
     print (_joystick.get_axis(0))
 
-screen = pygame.display.set_mode([WIDTH, HEIGHT+100])
+screen = pygame.display.set_mode([WIDTH, HEIGHT+50])
 game = pygame.Surface([WIDTH,HEIGHT])
 ux = pygame.Surface([WIDTH,100])
 SpaceEngine = Engine(game,camera)
@@ -91,7 +91,7 @@ while running:
 
     # Calculate score
     if rocket.velocity.length() >= 10:
-        score += 0.001*rocket.velocity.length()
+        score += 0.0001*rocket.velocity.length()
 
     if particles.collisionWithPlayer:
         font = pygame.font.Font(None,144)

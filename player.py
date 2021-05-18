@@ -19,7 +19,7 @@ class Player(Particle):
         self.mass = 1
         self.angle = 0
         self.thruster = False
-        self.vMax = 1000 ** 2
+        self.vMax = 700 ** 2
         self.effects = list()
         self.angularAcc = 0
         self.angularVelocity = 0
