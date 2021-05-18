@@ -1,21 +1,21 @@
 from opensimplex import OpenSimplex
-opensimplex = OpenSimplex()
+opensimplex = OpenSimplex(1)
 import pygame
 from Planet import Planet
 vector = pygame.math.Vector2
 import math
 import random
-from Asteroid import Asteroid
-import config
 
 
 class ParticleManager():
     def __init__(self,engine) -> None:
         self.engine = engine
         self.particles = []
+        self.effects = []
         self.player = None
-        self.G = 0.1
+        self.G = 0.6
         self.collisionWithPlayer = False
+
 
     def addParticle(self,particle):
         self.particles.append(particle)
@@ -23,16 +23,25 @@ class ParticleManager():
     def addPlayer(self,particle):
         self.player = particle
         self.addParticle(particle)
-        #lägga in rocket i particles? tills senare
 
     def checkCollision(self, planet):
             # print(planet)
-        if not planet.__repr__() == "Player": 
+        if not planet.__repr__() == "Player" and not planet.__repr__() == "Effect": 
             if self.getDistance(self.player.positon,planet.positon) <= planet.radius**2:
-                #self.player.velocity = vector(0,0) Not a good way to do this. 
+                self.player.velocity = vector(0,0)
                 return True
         return False
     def update(self,dt):
+        effects = self.player.getEffects()
+        self.effects += effects
+
+        for particle in self.effects:
+            particle.update(dt)
+            self.engine.draw(particle.get_surface(),particle.get_rect())
+            if particle.timeout():
+                self.effects.remove(particle)
+                
+
         self.collisionWithPlayer = False
         for particle in self.particles:
             # print("Inframe", self.engine.camera.inframe(particle.positon))
@@ -43,13 +52,17 @@ class ParticleManager():
             if self.checkCollision(particle):
                 self.collisionWithPlayer = True
             self.engine.draw(particle.get_surface(),particle.get_rect())
-            self.engine.debug(particle.positon)
+            #self.engine.debug(particle.positon)
+            if particle.timeout():
+                self.particles.remove(particle)
+
+    
 
     def gravity(self,p1):
         if p1.__repr__() != "Planet":
             for p2 in self.particles:
                 distance_squared = self.getDistance(p1.positon,p2.positon)
-                if(p1 == p2 or p2.__repr__() == "Effect"):
+                if(p1 == p2 or p2.__repr__() == "Effect" or p1.__repr__() == "Effect"):
                     continue
                 angle = self.getAngle(p1.positon,p2.positon)
                 
@@ -78,45 +91,28 @@ class ParticleManager():
         angle = -angle
         return angle
 
-
-
-
     def getForce(self,distance,angle,p1,p2):
         mass1 = p1.mass
         mass2 = p2.mass
         G = self.G
-
-        rawForce = G*mass1*mass2 / (distance)
+        rawForce = 0
+        if(distance > 0):
+            rawForce = G*mass1*mass2 / (distance)
         force = vector(rawForce,0)
         force.rotate_ip((angle))
         # force.y = -force.y
         return force
 
-    def generateAsteroids(self):
-        #position = vector(100,100)
-        radius = 10
-        pos1 = vector(random.choice([config.WIDTH, radius]), random.randint(radius+1,config.HEIGHT))
-        pos2 = vector(random.randint(radius+1,config.WIDTH),  random.choice([config.HEIGHT, radius]))
-        position = random.choice([pos1,pos2])
-        print(position)
-        asteroid = Asteroid(position, radius)
-        asteroid.positon = position
-        asteroid.velocity = vector(-50,50)
-        asteroid.width = 40
-        asteroid.height = 40
-        asteroid.mass = 1
-        self.addParticle(asteroid)
-
-        
     def generatePlanets(self):
-        xAmount = 20
-        yAmount = 20
-        maxRadius = 400
+        xAmount = 50
+        yAmount = 50
+        maxRadius = 300
         maxMass = 10**8
         factor = 1
-        grid = 1200
-        for x in range(-xAmount,xAmount):
-            for y in range(-yAmount,yAmount):
+        grid = 1000
+        for x in range(int(-xAmount/2),int(xAmount/2)):
+            print( str(int(100*((x+xAmount/2)/xAmount))) + "%")
+            for y in range(int(-yAmount/2),int(yAmount/2)):
                 # print(x,y)
                 value = (opensimplex.noise2d(x,y)+1)/2
                 value **= factor

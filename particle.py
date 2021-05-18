@@ -19,7 +19,7 @@ class Particle:
         self.velocity += self.acceleration * dt
         self.positon += self.velocity * dt
         self.force = vector(0,0)
-        self.rect.x, self.rect.y= int(self.positon.x-self.height/2), int(self.positon.y+self.width/2)
+        self.rect.x, self.rect.y= int(self.positon.x-self.width), int(self.positon.y+self.height)
 
     def addForce(self,force):
         self.force += force
@@ -29,7 +29,9 @@ class Particle:
     
     def get_rect():
         pass
-    
 
-    def draw(self):
-        pygame.draw.circle(self.surface, (255, 255, 255), (self.radius,self.radius),self.radius, width = 4)
+    def draw():
+        pass
+
+    def timeout():
+        return False
