@@ -41,6 +41,7 @@ particles = ParticleManager(SpaceEngine)
 particles.addPlayer(rocket)
 particles.generatePlanets()
 
+
 score = 0
 
 running = True
@@ -64,8 +65,8 @@ while running:
             
     if joystick:
         x,y,z,v = axes
-        v = (-v+1)/2
-        print(x)
+        v = (-v+1)
+        x * 2
         rocket.accelerate(v)
         rocket.rotate(x)
 
@@ -99,6 +100,7 @@ while running:
         #update = False
         rocket.reset()
         camera.setmethod(follow)
+        print("SCORE: "+score)
         score = 0
 
         # spelet ska resetta efter detta
