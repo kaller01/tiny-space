@@ -7,7 +7,7 @@ from Planet import Planet
 from config import *
 from pygame.locals import *
 from score import renderScore
-joystick = True
+joystick = False
 clock = pygame.time.Clock()
 vector = pygame.math.Vector2
 
@@ -100,7 +100,7 @@ while running:
         #update = False
         rocket.reset()
         camera.setmethod(follow)
-        print("SCORE: "+score)
+        print("SCORE: "+str(score))
         score = 0
 
         # spelet ska resetta efter detta
