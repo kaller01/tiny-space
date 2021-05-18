@@ -36,4 +36,9 @@ class Effect(Particle):
         self.timelimit -= dt
 
     def timeout(self):
+<<<<<<< HEAD
         return self.timelimit < 0
+=======
+        return self.timelimit < 0
+        
+>>>>>>> 14961b5c884c0105c9f5d25d04e95926074843b2
