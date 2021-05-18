@@ -47,12 +47,21 @@ class Static(CameraScroll):
         CameraScroll.__init__(self, camera, player)
 
     def scroll(self):
-        pass
+        if(self.player.positon.x > self.camera.offset.x+config.WIDTH-300):
+            self.camera.offset_float.x += self.player.velocity.x * config.dt
+        if(self.player.positon.x < self.camera.offset.x+300):
+            self.camera.offset_float.x += self.player.velocity.x * config.dt  
+        if(self.player.positon.y < self.camera.offset.y-config.HEIGHT+300):
+            self.camera.offset_float.y += self.player.velocity.y * config.dt  
+        if(self.player.positon.y > self.camera.offset.y-300):
+           self.camera.offset_float.y += self.player.velocity.y * config.dt 
+        self.camera.offset.x, self.camera.offset.y = int(self.camera.offset_float.x), int(self.camera.offset_float.y)
 
     def inframe(self,postion,width,height):
-    
-        pass
-
+        margin = 300
+        return (postion.x > self.camera.offset_float.x-margin and postion.x < self.camera.offset_float.x+width+margin and postion.y > self.camera.offset_float.y-height-margin and postion.y < self.camera.offset_float.y+margin)
+            
+        
 class Border(CameraScroll):
     def __init__(self, camera, player):
         CameraScroll.__init__(self, camera, player)
